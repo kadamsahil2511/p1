@@ -1,0 +1,9 @@
+FROM evoapicloud/evolution-api:v2.3.7
+WORKDIR /evolution
+COPY evolution-patches/baileys+7.0.0-rc14.patch /tmp/baileys-pairing.patch
+RUN apk add --no-cache patch \
+ && npm install --no-audit --no-fund --no-save --package-lock=false baileys@7.0.0-rc14 \
+ && patch --batch --forward -p1 < /tmp/baileys-pairing.patch \
+ && node -e "if (require('./node_modules/baileys/package.json').version !== '7.0.0-rc14') process.exit(1)" \
+ && apk del patch \
+ && rm /tmp/baileys-pairing.patch

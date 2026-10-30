@@ -1,0 +1,59 @@
+name: P1 CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-api.txt
+      - run: python -m pip install -r requirements-api.txt pytest
+      - run: python -m pytest -q test_api.py test_sources.py test_news_store.py test_mcp_server.py test_keys.py
+      - run: cp .env.example .env && docker compose config --quiet
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency: p1-production
+    steps:
+      - uses: actions/checkout@v6
+      - name: Configure pinned SSH access
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          set -eu
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/p1_deploy
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/p1_deploy ~/.ssh/known_hosts
+      - name: Sync and restart P1
+        run: |
+          set -eu
+          ssh_args="-i $HOME/.ssh/p1_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes"
+          rsync -az --delete \
+            --exclude='.git/' --exclude='.env' --exclude='data/' \
+            --exclude='backups/' --exclude='node_modules/' \
+            -e "ssh $ssh_args" ./ p1deploy@p1.kadamsahil.com:/opt/p1/
+          ssh $ssh_args p1deploy@p1.kadamsahil.com 'cd /opt/p1 && docker compose config --quiet && docker compose up -d --build && for i in $(seq 1 20); do if curl -fsS http://127.0.0.1:3000/health >/dev/null; then exit 0; fi; sleep 3; done; docker compose logs --tail=40 p1; exit 1'

@@ -1,0 +1,9 @@
+p1.kadamsahil.com {
+  @setup path /setup /setup/*
+  handle @setup {
+    reverse_proxy p1:3000
+  }
+  handle {
+    respond 404
+  }
+}

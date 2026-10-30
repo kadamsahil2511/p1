@@ -1,0 +1,65 @@
+[
+  {
+    "name": "newsletter.aicollective.com",
+    "url": "https://newsletter.aicollective.com/",
+    "method": "archive",
+    "feed_url": null,
+    "id": "ad47911e-5e38-52f5-9c3e-69004ad261d3"
+  },
+  {
+    "name": "newsletter.pragmaticengineer.com",
+    "url": "https://newsletter.pragmaticengineer.com/",
+    "method": "feed",
+    "feed_url": "https://newsletter.pragmaticengineer.com/feed",
+    "id": "3a2bc8f4-a0b8-5c72-9ff7-eb6095f31690"
+  },
+  {
+    "name": "blog.bytebytego.com",
+    "url": "https://blog.bytebytego.com/",
+    "method": "feed",
+    "feed_url": "https://blog.bytebytego.com/feed",
+    "id": "803d781a-8e4e-5eba-9fef-1ddf8c0e4795"
+  },
+  {
+    "name": "www.a16z.news",
+    "url": "https://www.a16z.news/",
+    "method": "feed",
+    "feed_url": "https://www.a16z.news/feed",
+    "id": "4554daf1-ce49-5dc5-a2fe-73816d9621a8"
+  },
+  {
+    "name": "simonwillison.net",
+    "url": "https://simonwillison.net/atom/entries/",
+    "method": "feed",
+    "feed_url": "https://simonwillison.net/atom/entries/",
+    "id": "5595b828-1b8a-54f4-a78f-6b3521c10ba9"
+  },
+  {
+    "name": "huggingface.co",
+    "url": "https://huggingface.co/blog/feed.xml",
+    "method": "feed",
+    "feed_url": "https://huggingface.co/blog/feed.xml",
+    "id": "4d098b84-4be2-5687-9d30-818b73a28de7"
+  },
+  {
+    "name": "github.blog",
+    "url": "https://github.blog/feed/",
+    "method": "feed",
+    "feed_url": "https://github.blog/feed/",
+    "id": "276587ea-f99f-5b5c-b964-681f0c8dba4c"
+  },
+  {
+    "name": "signup.tldr.tech",
+    "url": "https://signup.tldr.tech/tech/archives",
+    "method": "archive",
+    "feed_url": null,
+    "id": "9a2b2a2c-6a0a-5c95-bf77-4142cf8e4c73"
+  },
+  {
+    "name": "www.therundown.ai",
+    "url": "https://www.therundown.ai/articles",
+    "method": "archive",
+    "feed_url": null,
+    "id": "f7e2f889-1ed2-57e9-b647-7433d1f37524"
+  }
+]
