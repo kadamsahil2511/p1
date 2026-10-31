@@ -1,5 +1,6 @@
 from html.parser import HTMLParser
 from pathlib import Path
+import re
 import unittest
 
 
@@ -58,6 +59,22 @@ class PublicSiteTests(unittest.TestCase):
         self.assertEqual(len(proof_images), 2)
         self.assertTrue(all(image.get("alt", "").strip() for image in proof_images))
         self.assertTrue((HTML_PATH.parent / "assets/p1-whatsapp-proof.png").is_file())
+
+    def test_phone_screens_do_not_zoom_and_crop_image_sides(self):
+        for crop in ("digest", "answer"):
+            rule = re.search(
+                rf"\.screen-crop--{crop} img\s*\{{([^}}]+)\}}",
+                self.source,
+                re.DOTALL,
+            )
+            self.assertIsNotNone(rule)
+            self.assertNotRegex(rule.group(1), r"width:\s*(?:1[1-9]\d|[2-9]\d\d)%")
+
+    def test_answer_crop_masks_owner_only_content(self):
+        self.assertRegex(
+            self.source,
+            r"\.screen-crop--answer::after\s*\{[^}]*height:\s*30%[^}]*background:\s*#0b141a",
+        )
 
     def test_security_and_cost_copy_is_explicit(self):
         for phrase in (
