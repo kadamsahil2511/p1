@@ -2,6 +2,8 @@
 
 P1 Assistant is a self-hosted WhatsApp assistant for conversation and technology news. A Mastra workflow retrieves articles, its agent handles Groq chat and per-user memory, and a private MCP server calls the FastAPI P1 API. The API manages a defined source pool and local Qdrant search. The linked WhatsApp account runs through Evolution API.
 
+**Public guide:** [p1.kadamsahil.com](https://p1.kadamsahil.com) explains WhatsApp registration, key setup, and commands. It is served as a static page by Caddy. The `/setup` route stays on the private session-backed application; it cannot be opened without a short-lived link sent in WhatsApp.
+
 ## Setup and start
 
 Use Python 3.12+ and Node 22+. From this directory:
@@ -29,7 +31,7 @@ Website search uses local lexical Qdrant retrieval, so source terms in the quest
 
 ## Hostinger KVM 1 deployment
 
-The stack lives in `/opt/p1` on Hostinger KVM 1. Compose runs P1, Caddy, Evolution, PostgreSQL, and Redis. Caddy serves only `/setup` over HTTPS on `p1.kadamsahil.com`; P1 and Evolution bind to server loopback, and Evolution calls the webhook over the private Compose network. The apex and `www` DNS records are unchanged.
+The stack lives in `/opt/p1` on Hostinger KVM 1. Compose runs P1, Caddy, Evolution, PostgreSQL, and Redis. Caddy serves the public guide and `/setup` over HTTPS on `p1.kadamsahil.com`; P1 and Evolution bind to server loopback, and Evolution calls the webhook over the private Compose network. The apex and `www` DNS records are unchanged.
 
 Evolution v2.3.7's bundled Baileys cannot complete new WhatsApp device pairing. `Dockerfile.evolution` installs Baileys rc14 and applies the narrow, version-pinned [upstream pairing patch](https://github.com/evolution-foundation/evolution-api/pull/2727). Remove that patch once an official Evolution release includes the fix; keep the PostgreSQL and WhatsApp volumes across image updates.
 

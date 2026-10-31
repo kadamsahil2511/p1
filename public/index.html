@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="P1 Assistant is a WhatsApp assistant for conversation and sourced technology news. Learn how to join with your own Groq API key.">
+<title>P1 Assistant · WhatsApp AI and tech news</title>
+<style>
+  :root { color-scheme: light; font: 16px/1.6 system-ui, sans-serif; color: #182b25; background: #f5f7f4 }
+  * { box-sizing: border-box }
+  body { margin: 0 }
+  a { color: #116747 }
+  a:focus-visible { outline: 3px solid #dd8e3d; outline-offset: 3px }
+  .wrap { width: min(100% - 2rem, 1000px); margin: auto }
+  header { padding: 1.1rem 0; border-bottom: 1px solid #d9e3db }
+  nav, .links { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem }
+  nav a { text-decoration: none; font-weight: 650 }
+  .brand { font-size: 1.2rem; letter-spacing: -.03em }
+  .hero { padding: 5rem 0 3rem }
+  .eyebrow { color: #116747; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: .8rem }
+  h1 { font-size: clamp(2.6rem, 7vw, 5rem); line-height: 1.05; letter-spacing: -.055em; max-width: 750px; margin: .6rem 0 1.2rem }
+  h2 { font-size: clamp(1.7rem, 4vw, 2.3rem); line-height: 1.15; letter-spacing: -.035em; margin: 0 0 1rem }
+  h3 { margin: 0 0 .45rem; font-size: 1.05rem }
+  p { margin: .5rem 0 1rem }
+  .lead { max-width: 650px; font-size: 1.25rem; color: #496056 }
+  .button { display: inline-block; padding: .85rem 1.2rem; border-radius: .65rem; background: #176b48; color: white; text-decoration: none; font-weight: 700 }
+  .button:hover { background: #105336 }
+  .links { justify-content: flex-start; margin-top: 2rem }
+  .panel { background: white; border: 1px solid #dce6de; border-radius: 1rem; padding: 1.4rem }
+  section { padding: 2rem 0 }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem }
+  .step { font-size: .82rem; color: #116747; font-weight: 800 }
+  code { font: .95em ui-monospace, SFMono-Regular, Menlo, monospace; padding: .12rem .3rem; background: #edf4ee; border-radius: .25rem; overflow-wrap: anywhere }
+  .commands { display: grid; grid-template-columns: repeat(2, 1fr); gap: .7rem }
+  .commands p { margin: 0 }
+  .muted { color: #52655a }
+  footer { border-top: 1px solid #d9e3db; padding: 1.5rem 0 3rem; margin-top: 2rem }
+  @media (max-width: 700px) { .hero { padding: 3rem 0 1rem } .grid, .commands { grid-template-columns: 1fr } }
+</style>
+<header><nav class="wrap"><a class="brand" href="/">P1 Assistant</a><a href="https://github.com/kadamsahil2511/p1">View source on GitHub ↗</a></nav></header>
+<main class="wrap">
+  <div class="hero">
+    <div class="eyebrow">WhatsApp assistant · technology news</div>
+    <h1>Ask questions. Follow the news. Keep your own key.</h1>
+    <p class="lead">P1 is a WhatsApp assistant that chats with you and answers questions using a curated pool of technology articles. Each person brings their own Groq API key.</p>
+    <div class="links"><a class="button" href="https://wa.me/919136093485?text=%2Fhelp">Open P1 in WhatsApp ↗</a><a href="#how-to-start">How to start ↓</a></div>
+  </div>
+  <section id="how-to-start" aria-labelledby="start-title">
+    <h2 id="start-title">Get started in four steps</h2>
+    <div class="grid">
+      <div class="panel"><div class="step">01 · OPEN CHAT</div><h3>Message P1</h3><p>Open the WhatsApp link above and send <code>/help</code> to see what the bot can do.</p></div>
+      <div class="panel"><div class="step">02 · REGISTER</div><h3>Request a private link</h3><p>Send <code>/register</code>. P1 replies with a setup link valid for ten minutes. Open it from your phone.</p></div>
+      <div class="panel"><div class="step">03 · ADD YOUR KEYS</div><h3>Use the secure page</h3><p>Enter a required primary Groq key and, if you want, a different backup key. Get a key from <a href="https://console.groq.com/keys">Groq Console</a>. Never paste keys into WhatsApp chat.</p></div>
+    </div>
+    <div class="panel" style="margin-top:1rem"><div class="step">04 · CONFIRM</div><h3>Finish in WhatsApp</h3><p>After the key check, P1 sends you a confirmation code. Reply with the exact <code>/confirm &lt;code&gt;</code> command. Then send an ordinary message or try <code>/latest</code>.</p></div>
+  </section>
+  <section aria-labelledby="commands-title">
+    <h2 id="commands-title">What you can do</h2>
+    <div class="panel commands">
+      <p><code>Any message</code> Chat normally with memory for your current session.</p>
+      <p><code>/latest</code> Get recent sourced stories.</p>
+      <p><code>/ask &lt;question&gt;</code> Ask about indexed articles.</p>
+      <p><code>/sources</code> See the approved website pool.</p>
+      <p><code>/newchat</code> Start a fresh conversation.</p>
+      <p><code>/account</code> Check which keys are configured.</p>
+      <p><code>/deleteaccount</code> Remove your account and current chat.</p>
+      <p><code>/help</code> See the full command guide in WhatsApp.</p>
+    </div>
+    <p class="muted">Chats start a new session after one hour of inactivity. Source changes and the 07:00 IST digest are managed by the owner.</p>
+  </section>
+  <section aria-labelledby="privacy-title">
+    <h2 id="privacy-title">Your key, your account</h2>
+    <p class="muted">The setup link is short lived and tied to your WhatsApp number. Keys are validated, encrypted on the server, and activated only after your WhatsApp confirmation. The backup key is used only if the primary model request fails. Your Groq account controls your usage and any provider charges.</p>
+  </section>
+</main>
+<footer><div class="wrap">Built with Mastra, Groq, Evolution API, FastAPI, MCP, and Qdrant. <a href="https://github.com/kadamsahil2511/p1">Code and architecture on GitHub</a>.</div></footer>
+</html>
