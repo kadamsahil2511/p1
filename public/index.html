@@ -134,6 +134,7 @@
 
     .hero {
       position: relative;
+      overflow: clip;
       min-height: 880px;
       padding: 10.5rem 0 6rem;
       isolation: isolate;
@@ -266,7 +267,7 @@
     .phone-screen { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 2.12rem; background: #0b141a }
     .screen-crop { position: absolute; inset: 0; overflow: hidden }
     .screen-crop img { position: absolute; width: 100%; max-width: none; height: auto; left: 0; top: 0 }
-    .screen-crop--digest img { transform: translateY(-42%) }
+    .screen-crop--digest img { width: 110%; left: -5%; transform: translateY(-53%) }
 
     .signal-band { overflow: hidden; border-block: 1px solid var(--ink); background: var(--orange); color: var(--ink) }
     .signal-track { width: max-content; display: flex; gap: 2rem; padding: .8rem 0; font: 500 .72rem var(--mono); text-transform: uppercase; letter-spacing: .08em; animation: signal-drift 24s linear infinite }
