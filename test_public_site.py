@@ -47,6 +47,7 @@ class PublicSiteTests(unittest.TestCase):
             "https://wa.me/919136093485?text=%2Fhelp", self.page.hrefs
         )
         self.assertIn("https://github.com/kadamsahil2511/p1", self.page.hrefs)
+        self.assertIn("https://console.groq.com/keys", self.page.hrefs)
 
     def test_real_whatsapp_proof_is_used_twice(self):
         proof_images = [
@@ -64,8 +65,13 @@ class PublicSiteTests(unittest.TestCase):
             "ten minutes",
             "encrypted",
             "provider charges",
+            "when the evidence isn't there, p1 doesn't invent an answer",
         ):
             self.assertIn(phrase, self.visible_text)
+
+    def test_architecture_keeps_retrieval_and_generation_separate(self):
+        self.assertIn("<strong>Qdrant</strong>", self.source)
+        self.assertIn("<strong>Groq</strong>", self.source)
 
     def test_motion_has_an_accessible_fallback(self):
         self.assertIn("prefers-reduced-motion: reduce", self.source)

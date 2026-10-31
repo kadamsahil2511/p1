@@ -319,7 +319,7 @@
     .step-card code { color: inherit; font-size: .85em }
 
     .architecture { border-block: 1px solid var(--ink); background: var(--cream-2) }
-    .pipeline { display: grid; grid-template-columns: repeat(9, auto); align-items: center; justify-content: space-between; gap: .45rem; margin-top: 3rem }
+    .pipeline { display: grid; grid-template-columns: repeat(11, auto); align-items: center; justify-content: space-between; gap: .45rem; margin-top: 3rem }
     .node { min-height: 92px; min-width: 112px; display: grid; place-items: center; padding: .85rem; border: 1px solid var(--ink); background: var(--cream); text-align: center }
     .node strong { display: block; font-size: .82rem }
     .node span { display: block; margin-top: .2rem; color: var(--muted); font: 400 .62rem var(--mono) }
@@ -370,9 +370,8 @@
       .hero-grid, .dark-grid { grid-template-columns: 1fr 390px; gap: 2rem }
       .hero h1 { font-size: clamp(3.7rem, 8vw, 6rem) }
       .steps { grid-template-columns: repeat(2, 1fr) }
-      .pipeline { grid-template-columns: repeat(5, 1fr) }
-      .node { min-width: 0 }
-      .pipe:nth-of-type(5) { display: none }
+      .pipeline { gap: .25rem }
+      .node { min-width: 90px; padding: .65rem }
       .security-grid { grid-template-columns: 1fr 1fr }
       .security-card--feature { grid-row: span 2 }
     }
@@ -396,7 +395,6 @@
       .step-card { min-height: 230px }
       .pipeline { grid-template-columns: 1fr; justify-items: stretch }
       .pipe { text-align: center; transform: rotate(90deg) }
-      .pipe:nth-of-type(5) { display: block }
       .node { min-height: 78px }
       .security-grid, .commands { grid-template-columns: 1fr }
       .security-card--feature { grid-row: auto }
@@ -467,7 +465,7 @@
         <div class="reveal">
           <p class="eyebrow">Evidence before eloquence</p>
           <h2 class="section-title" id="proof-title">A useful answer—or an honest no.</h2>
-          <p class="section-lead">P1 retrieves from its indexed technology pool, cites what it used, and refuses to invent an answer when the available evidence does not support one.</p>
+          <p class="section-lead">When the evidence isn't there, P1 doesn't invent an answer. It retrieves from its indexed technology pool and cites what it used.</p>
           <ul class="evidence-list">
             <li><span class="check">01</span><div><strong>Answers stay traceable</strong><p>Source URLs travel with the response so you can inspect the original reporting.</p></div></li>
             <li><span class="check">02</span><div><strong>Retrieval comes first</strong><p>Qdrant search and reranking narrow the context before Groq generates a reply.</p></div></li>
@@ -493,7 +491,7 @@
         <div class="steps reveal">
           <article class="step-card"><span class="step-number">01 / OPEN</span><div><h3>Message P1</h3><p>Open the chat and send <code>/help</code> to see the available workflow.</p></div></article>
           <article class="step-card"><span class="step-number">02 / REGISTER</span><div><h3>Request access</h3><p>Send <code>/register</code>. Your setup link is valid for ten minutes.</p></div></article>
-          <article class="step-card"><span class="step-number">03 / CONNECT</span><div><h3>Add your keys</h3><p>Enter a primary Groq key and an optional backup on the secure page—never in chat.</p></div></article>
+          <article class="step-card"><span class="step-number">03 / CONNECT</span><div><h3>Add your keys</h3><p>Enter a primary Groq key and an optional backup on the secure page—never in chat. <a href="https://console.groq.com/keys">Create one in Groq Console ↗</a>.</p></div></article>
           <article class="step-card"><span class="step-number">04 / CONFIRM</span><div><h3>Finish in WhatsApp</h3><p>Reply with <code>/confirm &lt;code&gt;</code>, then ask a question or run <code>/latest</code>.</p></div></article>
         </div>
       </div>
@@ -507,7 +505,8 @@
           <div class="node"><div><strong>Evolution</strong><span>webhook</span></div></div><span class="pipe" aria-hidden="true">→</span>
           <div class="node"><div><strong>Mastra</strong><span>agent logic</span></div></div><span class="pipe" aria-hidden="true">→</span>
           <div class="node"><div><strong>MCP / FastAPI</strong><span>retrieval tools</span></div></div><span class="pipe" aria-hidden="true">→</span>
-          <div class="node"><div><strong>Qdrant + Groq</strong><span>evidence + answer</span></div></div>
+          <div class="node"><div><strong>Qdrant</strong><span>vector retrieval</span></div></div><span class="pipe" aria-hidden="true">→</span>
+          <div class="node"><div><strong>Groq</strong><span>response generation</span></div></div>
         </div>
         <p class="architecture-note">TypeScript agent · Python retrieval service · per-user encrypted credentials · primary/backup model fallback</p>
       </div>
