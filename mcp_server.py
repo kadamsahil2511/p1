@@ -73,5 +73,11 @@ def search_news(query: str, limit: int = 8) -> str:
     return json.dumps(request_api("GET", "/articles/search", {"query": query, "limit": limit}))
 
 
+@mcp.tool()
+def scrape_page(url: str) -> str:
+    """Read one public HTTPS page with Firecrawl for a WhatsApp link question."""
+    return json.dumps(request_api("POST", "/web/scrape", {"url": url}))
+
+
 if __name__ == "__main__":
     mcp.run()

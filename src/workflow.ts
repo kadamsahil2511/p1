@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { answer, newsTool } from './agent.js';
 
 const article = z.object({ title: z.string(), url: z.string(), source: z.string(), published: z.string(), text: z.string() });
-const input = z.object({ mode: z.enum(['chat', 'ask', 'latest', 'digest']), query: z.string(), resource: z.string(), thread: z.string(), articles: z.array(article).optional() });
+const input = z.object({ mode: z.enum(['chat', 'ask', 'latest', 'digest', 'web']), query: z.string(), resource: z.string(), thread: z.string(), articles: z.array(article).optional() });
 const fetched = input.extend({ articles: z.array(article) });
 
 const fetchArticles = createStep({
@@ -24,5 +24,5 @@ export async function runNewsWorkflow(data: z.infer<typeof input>, keys: { prima
   if (result.status !== 'success') throw new Error(`Mastra workflow ${result.status}`);
   if (!result.result.articles.length && data.mode !== 'chat') return 'No indexed P1 articles are available yet.';
   const question = data.mode === 'latest' ? 'Give a readable summary of these recent tech stories, with each exact source URL.' : data.query;
-  return answer(question, data.resource, data.thread, keys.primaryKey, keys.backupKey, result.result.articles);
+  return answer(question, data.resource, data.thread, keys.primaryKey, keys.backupKey, result.result.articles, data.mode === 'web' ? 16000 : 1200);
 }

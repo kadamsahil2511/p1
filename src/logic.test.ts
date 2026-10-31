@@ -1,6 +1,19 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { parseIncoming, selectNew, formatDigest, whatsAppText, evolutionIsOpen, isWebhookPath } from './logic.js';
+import { parseIncoming, selectNew, formatDigest, whatsAppText, evolutionIsOpen, isWebhookPath, firstLink, allowWebRead } from './logic.js';
+
+test('finds the first link and removes WhatsApp punctuation around it', () => {
+  assert.equal(firstLink('Read this (https://example.com/story?q=1).'), 'https://example.com/story?q=1');
+  assert.equal(firstLink('No link here'), null);
+});
+
+test('limits shared Firecrawl reads for each registered number', () => {
+  const reads = new Map<string, { started: number; count: number }>();
+  for (let i = 0; i < 5; i++) assert.equal(allowWebRead(reads, 'one', 1000), true);
+  assert.equal(allowWebRead(reads, 'one', 1000), false);
+  assert.equal(allowWebRead(reads, 'two', 1000), true);
+  assert.equal(allowWebRead(reads, 'one', 3_601_000), true);
+});
 
 test('accepts Evolution event webhook paths with the configured secret', () => {
   assert.equal(isWebhookPath('/webhook/secret', 'secret'), true);

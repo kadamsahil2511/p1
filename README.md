@@ -27,6 +27,8 @@ Commands: `/register`, `/confirm <code>`, `/account`, `/deleteaccount`, `/help`,
 
 Plain messages are normal chat after registration. Each number gets separate Mastra memory; a new thread starts after one idle hour. The backup key is tried only after the primary model request fails. The existing 07:00 IST digest and shared source administration remain owner-only. `/refresh` and the schedule select only stories missing from the delivery ledger. A story enters that ledger only after Evolution accepts the WhatsApp message. The ledger, encrypted account database, Mastra SQLite memory, source registry, and Qdrant files are under `data/` and must be included in backups. Keep `ACCOUNT_ENCRYPTION_KEY` with those backups: without it, stored user keys cannot be recovered.
 
+Send a public HTTPS link in an ordinary message or after `/ask` to have P1 read that page through Firecrawl, answer your question, and cite the URL. A link on its own gets a summary. The first link in a message is used. This live page reading is separate from the approved news pool and does not add the page to the index. Set `FIRECRAWL_API_KEY` in the server `.env`; this key is used by the private API, not sent to Groq users. Registered users can read five links per hour; the owner has no limit. Firecrawl scraping can consume account credits.
+
 Website search uses local lexical Qdrant retrieval, so source terms in the question improve matches. Scraping honors robots rules and does not bypass paywalls.
 
 ## Hostinger KVM 1 deployment

@@ -55,3 +55,23 @@ def test_default_sources_seeded_once(tmp_path):
     assert len(__import__("json").loads(path.read_text())) == 9
     path.write_text("[]")
     assert source_registry_path(tmp_path / "fresh").read_text() == "[]"
+
+
+def test_firecrawl_scrape_requires_auth_and_returns_page_evidence(tmp_path, monkeypatch):
+    registry = SourceRegistry(tmp_path / "sources.json")
+    store = NewsStore(tmp_path / "qdrant")
+    client = TestClient(create_app(registry, store, "secret"))
+    url = "https://example.com/story"
+    assert client.post("/web/scrape", json={"url": url}).status_code == 401
+    headers = {"Authorization": "Bearer secret"}
+    assert client.post("/web/scrape", json={"url": "https://127.0.0.1/private"}, headers=headers).status_code == 400
+    monkeypatch.setenv("FIRECRAWL_API_KEY", "test-key")
+    reply = requests.Response()
+    reply.status_code = 200
+    reply._content = b'{"success":true,"data":{"markdown":"Page facts and details.","metadata":{"title":"A story"}}}'
+    with patch("api.validate_public_url", return_value=url), patch("api.requests.post", return_value=reply) as post:
+        result = client.post("/web/scrape", json={"url": url}, headers=headers)
+    assert result.status_code == 200
+    assert result.json() == {"url": url, "title": "A story", "source": "example.com", "published": "", "text": "Page facts and details."}
+    assert post.call_args.args[0] == "https://api.firecrawl.dev/v2/scrape"
+    assert post.call_args.kwargs["json"]["url"] == url

@@ -3,6 +3,21 @@ import { timingSafeEqual } from 'node:crypto';
 export type Article = { title: string; url: string; source: string; published: string; text: string };
 export type Incoming = { id: string; number: string; text: string };
 
+export function firstLink(text: string): string | null {
+  // shortcut: read the first link in a message; add multi-link support if chat requests need comparisons.
+  const match = /https?:\/\/[^\s<>"']+/i.exec(text);
+  return match?.[0].replace(/[.,!?;:)}\]]+$/, '') ?? null;
+}
+
+export function allowWebRead(reads: Map<string, { started: number; count: number }>, number: string, now: number): boolean {
+  // shortcut: this quota resets on restart; persist it if Firecrawl spending needs a durable cap.
+  const current = reads.get(number);
+  if (!current || now - current.started >= 3_600_000) { reads.set(number, { started: now, count: 1 }); return true; }
+  if (current.count >= 5) return false;
+  current.count++;
+  return true;
+}
+
 export function isWebhookPath(received: string, secret: string): boolean {
   const expected = `/webhook/${secret}`;
   const suffix = received.slice(expected.length);

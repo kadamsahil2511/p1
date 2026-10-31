@@ -3,7 +3,7 @@ import { mkdir, readFile, writeFile, rename } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { newsTool, disconnectMcp, clearThread } from './agent.js';
 import { runNewsWorkflow } from './workflow.js';
-import { evolutionIsOpen, formatDigest, isWebhookPath, parseIncoming, selectNew, whatsAppText, type Article } from './logic.js';
+import { allowWebRead, evolutionIsOpen, firstLink, formatDigest, isWebhookPath, parseIncoming, selectNew, whatsAppText, type Article } from './logic.js';
 import { AccountStore } from './accounts.js';
 import { handleSetup } from './setup-web.js';
 
@@ -26,7 +26,7 @@ async function save(): Promise<void> {
   await writeFile(temp, JSON.stringify(state));
   await rename(temp, statePath);
 }
-const help = `*P1 Assistant*\nSend any message to chat. Chats reset after one idle hour.\n\n/register — set or replace your Groq keys in a private page\n/account — see whether your primary and backup keys are set\n/deleteaccount — remove your account and current chat\n/newchat — start a fresh chat\n/latest — recent tech news\n/ask <question> — ask about indexed news\n/sources — approved websites\n/help — show this guide\n\nThe owner can also use /addsource, /removesource and /refresh. Owner digest: 07:00 IST.`;
+const help = `*P1 Assistant*\nSend any message to chat, or send a public HTTPS link to read and discuss that page. Chats reset after one idle hour.\n\n/register — set or replace your Groq keys in a private page\n/account — see whether your primary and backup keys are set\n/deleteaccount — remove your account and current chat\n/newchat — start a fresh chat\n/latest — recent tech news\n/ask <question> — ask about indexed news or a link\n/sources — approved websites\n/help — show this guide\n\nThe owner can also use /addsource, /removesource and /refresh. Owner digest: 07:00 IST.`;
 const evolution = process.env.EVOLUTION_API_URL ?? 'http://127.0.0.1:8080';
 async function evolutionReady(): Promise<boolean> {
   try {
@@ -129,11 +129,24 @@ async function handle(number: string, text: string): Promise<void> {
   if (command === '/ask' || command === 'chat') {
     const question = command === 'chat' ? text : argument;
     if (!question) return send(number, 'Send a question after /ask.');
+    const link = firstLink(question);
+    if (link) {
+      if (number !== owner && !allowWebRead(webReads, number, Date.now())) return send(number, 'You can read up to five links per hour. Try again later.');
+      let page: Article;
+      try {
+        page = await newsTool<Article>('scrape_page', { url: link });
+      } catch (error) {
+        console.error(JSON.stringify({ stage: 'web.scrape_failed', error: error instanceof Error ? error.name : 'Error' }));
+        return send(number, 'I could not read that link with Firecrawl. Send a public HTTPS page and try again.');
+      }
+      return send(number, await runNewsWorkflow({ mode: 'web', query: question === link ? 'Summarize this page and its key facts, then cite the URL.' : question, resource: number, thread: account.thread, articles: [page] }, account));
+    }
     return send(number, await runNewsWorkflow({ mode: command === '/ask' ? 'ask' : 'chat', query: question, resource: number, thread: account.thread }, account));
   }
   return send(number, 'Unknown command. Use /help.');
 }
 const processing = new Set<string>();
+const webReads = new Map<string, { started: number; count: number }>();
 const server = createServer(async (request, response) => {
   if (request.url === '/health') { response.writeHead(200).end('ok'); return; }
   if (await handleSetup(request, response, accounts, send)) return;

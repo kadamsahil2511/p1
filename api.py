@@ -4,6 +4,7 @@ import os
 import secrets
 import shutil
 import threading
+import requests
 from pathlib import Path
 from time import monotonic
 from urllib.parse import urlparse
@@ -13,7 +14,7 @@ from pydantic import BaseModel
 
 from news_store import NewsStore
 from logging_utils import get_logger
-from sources import SourceRegistry, collect, probe
+from sources import SourceRegistry, collect, probe, validate_public_url
 
 
 DATA_DIR = Path(os.getenv("P1_DATA_DIR", Path(__file__).with_name("data")))
@@ -35,6 +36,36 @@ def create_app(registry: SourceRegistry, store: NewsStore, token: str) -> FastAP
     @app.get("/health")
     def health() -> dict:
         return {"ok": True}
+
+    @app.post("/web/scrape", dependencies=[Depends(authorized)])
+    def scrape_web_page(request: SourceRequest) -> dict:
+        try:
+            url = validate_public_url(request.url)
+        except ValueError as error:
+            raise HTTPException(400, str(error)) from error
+        key = os.getenv("FIRECRAWL_API_KEY", "").strip()
+        if not key:
+            raise HTTPException(503, "Firecrawl is not configured.")
+        try:
+            response = requests.post(
+                "https://api.firecrawl.dev/v2/scrape",
+                headers={"Authorization": f"Bearer {key}"},
+                json={"url": url, "formats": ["markdown"], "onlyMainContent": True},
+                timeout=45,
+            )
+            response.raise_for_status()
+            result = response.json()
+        except (requests.RequestException, ValueError) as error:
+            LOGGER.warning("web.scrape_failed host=%s error=%s", urlparse(url).hostname, type(error).__name__)
+            raise HTTPException(502, "Firecrawl could not read this page.") from error
+        data = result.get("data") if isinstance(result, dict) else None
+        text = data.get("markdown") if isinstance(data, dict) else None
+        if not isinstance(result, dict) or result.get("success") is not True or not isinstance(text, str) or not text.strip():
+            raise HTTPException(502, "Firecrawl returned no readable page content.")
+        metadata = data.get("metadata") if isinstance(data.get("metadata"), dict) else {}
+        LOGGER.info("web.scraped host=%s chars=%d", urlparse(url).hostname, len(text))
+        return {"url": url, "title": str(metadata.get("title") or urlparse(url).hostname)[:200],
+                "source": urlparse(url).hostname, "published": "", "text": text[:16000]}
 
     @app.get("/sources", dependencies=[Depends(authorized)])
     def sources() -> list[dict]:
