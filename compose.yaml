@@ -1,18 +1,5 @@
 name: p1
 services:
-  caddy:
-    image: caddy:2
-    restart: unless-stopped
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./public:/srv:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    depends_on:
-      - p1
   p1:
     build: .
     restart: unless-stopped
@@ -73,8 +60,6 @@ services:
     volumes:
       - redis_data:/data
 volumes:
-  caddy_data:
-  caddy_config:
   evolution_instances:
   postgres_data:
   redis_data:

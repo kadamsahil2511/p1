@@ -51,9 +51,9 @@ jobs:
       - name: Sync and restart P1
         run: |
           set -eu
-          ssh_args="-i $HOME/.ssh/p1_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes"
+          ssh_args="-i $HOME/.ssh/p1_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=p1.kadamsahil.com"
           rsync -az --delete \
             --exclude='.git/' --exclude='.env' --exclude='data/' \
             --exclude='backups/' --exclude='node_modules/' \
-            -e "ssh $ssh_args" ./ p1deploy@p1.kadamsahil.com:/opt/p1/
-          ssh $ssh_args p1deploy@p1.kadamsahil.com 'cd /opt/p1 && docker compose config --quiet && docker compose up -d --build && for i in $(seq 1 20); do if curl -fsS http://127.0.0.1:3000/health >/dev/null; then exit 0; fi; sleep 3; done; docker compose logs --tail=40 p1; exit 1'
+            -e "ssh $ssh_args" ./ p1deploy@setup.p1.kadamsahil.com:/opt/p1/
+          ssh $ssh_args p1deploy@setup.p1.kadamsahil.com 'cd /opt/p1 && docker compose config --quiet && docker compose up -d --build && for i in $(seq 1 20); do if curl -fsS http://127.0.0.1:3000/health >/dev/null; then exit 0; fi; sleep 3; done; docker compose logs --tail=40 p1; exit 1'
