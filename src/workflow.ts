@@ -24,5 +24,5 @@ export async function runNewsWorkflow(data: z.infer<typeof input>, keys: { prima
   if (result.status !== 'success') throw new Error(`Mastra workflow ${result.status}`);
   if (!result.result.articles.length && data.mode !== 'chat') return 'No indexed P1 articles are available yet.';
   const question = data.mode === 'latest' ? 'Give a readable summary of these recent tech stories, with each exact source URL.' : data.query;
-  return answer(question, data.resource, data.thread, keys.primaryKey, keys.backupKey, result.result.articles, data.mode === 'web' ? 16000 : 1200);
+  return answer(question, data.resource, data.thread, keys.primaryKey, keys.backupKey, result.result.articles, data.mode === 'web' ? 8000 : 1200);
 }

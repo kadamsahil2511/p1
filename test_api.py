@@ -75,3 +75,19 @@ def test_firecrawl_scrape_requires_auth_and_returns_page_evidence(tmp_path, monk
     assert result.json() == {"url": url, "title": "A story", "source": "example.com", "published": "", "text": "Page facts and details."}
     assert post.call_args.args[0] == "https://api.firecrawl.dev/v2/scrape"
     assert post.call_args.kwargs["json"]["url"] == url
+
+
+def test_github_scrape_uses_readme_and_caps_context(tmp_path, monkeypatch):
+    client = TestClient(create_app(SourceRegistry(tmp_path / "sources.json"), NewsStore(tmp_path / "qdrant"), "secret"))
+    monkeypatch.setenv("FIRECRAWL_API_KEY", "test-key")
+    url = "https://github.com/kadamsahil2511/p1"
+    navigation = "GitHub navigation " * 1100
+    readme = "# P1 Assistant\nMastra, Groq, MCP, and Qdrant. " + "Detail " * 2000
+    reply = requests.Response()
+    reply.status_code = 200
+    reply._content = __import__("json").dumps({"success": True, "data": {"markdown": navigation + "\n## Repository files navigation\n" + readme}}).encode()
+    with patch("api.validate_public_url", return_value=url), patch("api.requests.post", return_value=reply):
+        result = client.post("/web/scrape", json={"url": url}, headers={"Authorization": "Bearer secret"})
+    assert result.status_code == 200
+    assert result.json()["text"].startswith("# P1 Assistant")
+    assert len(result.json()["text"]) <= 8000

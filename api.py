@@ -63,9 +63,11 @@ def create_app(registry: SourceRegistry, store: NewsStore, token: str) -> FastAP
         if not isinstance(result, dict) or result.get("success") is not True or not isinstance(text, str) or not text.strip():
             raise HTTPException(502, "Firecrawl returned no readable page content.")
         metadata = data.get("metadata") if isinstance(data.get("metadata"), dict) else {}
+        if urlparse(url).hostname == "github.com" and len(urlparse(url).path.strip("/").split("/")) == 2 and "## Repository files navigation" in text:
+            text = text.split("## Repository files navigation", 1)[1].strip()
         LOGGER.info("web.scraped host=%s chars=%d", urlparse(url).hostname, len(text))
         return {"url": url, "title": str(metadata.get("title") or urlparse(url).hostname)[:200],
-                "source": urlparse(url).hostname, "published": "", "text": text[:16000]}
+                "source": urlparse(url).hostname, "published": "", "text": text[:8000]}
 
     @app.get("/sources", dependencies=[Depends(authorized)])
     def sources() -> list[dict]:

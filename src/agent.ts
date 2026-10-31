@@ -1,4 +1,5 @@
 import { Agent } from '@mastra/core/agent';
+import { TokenLimiterProcessor } from '@mastra/core/processors';
 import { mkdirSync } from 'node:fs';
 import { Memory } from '@mastra/memory';
 import { LibSQLStore } from '@mastra/libsql';
@@ -49,6 +50,7 @@ export async function answer(question: string, resource: string, thread: string,
     const assistant = new Agent({
       id: 'p1', name: 'P1 Assistant', instructions,
       model: { url: 'https://api.groq.com/openai/v1', id: modelId, apiKey }, memory,
+      inputProcessors: [new TokenLimiterProcessor({ limit: 5000, trimMode: 'contiguous' })],
     });
     return assistant.generate(prompt, { memory: { resource, thread } });
   };
