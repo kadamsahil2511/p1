@@ -1,76 +1,584 @@
 <!doctype html>
 <html lang="en">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="P1 Assistant is a WhatsApp assistant for conversation and sourced technology news. Learn how to join with your own Groq API key.">
-<title>P1 Assistant · WhatsApp AI and tech news</title>
-<style>
-  :root { color-scheme: light; font: 16px/1.6 system-ui, sans-serif; color: #182b25; background: #f5f7f4 }
-  * { box-sizing: border-box }
-  body { margin: 0 }
-  a { color: #116747 }
-  a:focus-visible { outline: 3px solid #dd8e3d; outline-offset: 3px }
-  .wrap { width: min(100% - 2rem, 1000px); margin: auto }
-  header { padding: 1.1rem 0; border-bottom: 1px solid #d9e3db }
-  nav, .links { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem }
-  nav a { text-decoration: none; font-weight: 650 }
-  .brand { font-size: 1.2rem; letter-spacing: -.03em }
-  .hero { padding: 5rem 0 3rem }
-  .eyebrow { color: #116747; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: .8rem }
-  h1 { font-size: clamp(2.6rem, 7vw, 5rem); line-height: 1.05; letter-spacing: -.055em; max-width: 750px; margin: .6rem 0 1.2rem }
-  h2 { font-size: clamp(1.7rem, 4vw, 2.3rem); line-height: 1.15; letter-spacing: -.035em; margin: 0 0 1rem }
-  h3 { margin: 0 0 .45rem; font-size: 1.05rem }
-  p { margin: .5rem 0 1rem }
-  .lead { max-width: 650px; font-size: 1.25rem; color: #496056 }
-  .button { display: inline-block; padding: .85rem 1.2rem; border-radius: .65rem; background: #176b48; color: white; text-decoration: none; font-weight: 700 }
-  .button:hover { background: #105336 }
-  .links { justify-content: flex-start; margin-top: 2rem }
-  .panel { background: white; border: 1px solid #dce6de; border-radius: 1rem; padding: 1.4rem }
-  section { padding: 2rem 0 }
-  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem }
-  .step { font-size: .82rem; color: #116747; font-weight: 800 }
-  code { font: .95em ui-monospace, SFMono-Regular, Menlo, monospace; padding: .12rem .3rem; background: #edf4ee; border-radius: .25rem; overflow-wrap: anywhere }
-  .commands { display: grid; grid-template-columns: repeat(2, 1fr); gap: .7rem }
-  .commands p { margin: 0 }
-  .muted { color: #52655a }
-  footer { border-top: 1px solid #d9e3db; padding: 1.5rem 0 3rem; margin-top: 2rem }
-  @media (max-width: 700px) { .hero { padding: 3rem 0 1rem } .grid, .commands { grid-template-columns: 1fr } }
-</style>
-<header><nav class="wrap"><a class="brand" href="/">P1 Assistant</a><a href="https://github.com/kadamsahil2511/p1">View source on GitHub ↗</a></nav></header>
-<main class="wrap">
-  <div class="hero">
-    <div class="eyebrow">WhatsApp assistant · technology news</div>
-    <h1>Ask questions. Follow the news. Keep your own key.</h1>
-    <p class="lead">P1 is a WhatsApp assistant that chats with you and answers questions using a curated pool of technology articles. Each person brings their own Groq API key.</p>
-    <div class="links"><a class="button" href="https://wa.me/919136093485?text=%2Fhelp">Open P1 in WhatsApp ↗</a><a href="#how-to-start">How to start ↓</a></div>
-  </div>
-  <section id="how-to-start" aria-labelledby="start-title">
-    <h2 id="start-title">Get started in four steps</h2>
-    <div class="grid">
-      <div class="panel"><div class="step">01 · OPEN CHAT</div><h3>Message P1</h3><p>Open the WhatsApp link above and send <code>/help</code> to see what the bot can do.</p></div>
-      <div class="panel"><div class="step">02 · REGISTER</div><h3>Request a private link</h3><p>Send <code>/register</code>. P1 replies with a setup link valid for ten minutes. Open it from your phone.</p></div>
-      <div class="panel"><div class="step">03 · ADD YOUR KEYS</div><h3>Use the secure page</h3><p>Enter a required primary Groq key and, if you want, a different backup key. Get a key from <a href="https://console.groq.com/keys">Groq Console</a>. Never paste keys into WhatsApp chat.</p></div>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="P1 is an open-source WhatsApp assistant for grounded technology briefings, source-linked answers, and private bring-your-own-key access.">
+  <meta name="theme-color" content="#f2f1e9">
+  <title>P1 · Your technology briefing, already in WhatsApp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>document.documentElement.classList.add('js')</script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cream: #f2f1e9;
+      --cream-2: #e8e6db;
+      --ink: #0c0e0d;
+      --ink-2: #171a18;
+      --muted: #5d625e;
+      --line: rgba(12, 14, 13, .16);
+      --orange: #ff4b1f;
+      --orange-dark: #c92f0a;
+      --green: #25d366;
+      --white: #fffdf7;
+      --mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      --sans: "Manrope", Inter, system-ui, sans-serif;
+      --radius: 1.1rem;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box }
+    html { scroll-behavior: smooth }
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--cream);
+      color: var(--ink);
+      font: 400 16px/1.55 var(--sans);
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit }
+    a:focus-visible, button:focus-visible {
+      outline: 3px solid var(--orange);
+      outline-offset: 4px;
+    }
+    img { display: block; max-width: 100% }
+    h1, h2, h3, p { margin-top: 0 }
+    h1, h2, h3 { text-wrap: balance }
+    p { text-wrap: pretty }
+    code { font-family: var(--mono) }
+    .shell { width: min(calc(100% - 2.5rem), var(--max)); margin-inline: auto }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .65rem;
+      margin: 0 0 1.25rem;
+      font: 500 .72rem/1.2 var(--mono);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      width: .65rem;
+      height: .65rem;
+      background: var(--orange);
+      content: "";
+      box-shadow: .85rem 0 0 rgba(255, 75, 31, .32);
+    }
+
+    .site-header {
+      position: absolute;
+      z-index: 20;
+      inset: 0 0 auto;
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: .75rem;
+      min-height: 44px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      text-decoration: none;
+    }
+    .brand-mark {
+      display: grid;
+      width: 2rem;
+      height: 2rem;
+      place-items: center;
+      background: var(--ink);
+      color: var(--cream);
+      font: 500 .8rem var(--mono);
+    }
+    .nav-links { display: flex; align-items: center; gap: 1.4rem }
+    .nav-links a {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      font-size: .8rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .nav-links a:hover { color: var(--orange-dark) }
+
+    .button {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .65rem;
+      padding: .8rem 1.1rem;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--white);
+      font-size: .82rem;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform .2s ease, background .2s ease, color .2s ease;
+    }
+    .button:hover { transform: translateY(-2px); background: var(--orange); border-color: var(--orange) }
+    .button--quiet { background: transparent; color: var(--ink) }
+    .button--quiet:hover { color: var(--white) }
+    .button--cream { border-color: var(--cream); background: var(--cream); color: var(--ink) }
+    .button--cream:hover { color: var(--white) }
+    .arrow { font: 500 1rem var(--mono) }
+
+    .hero {
+      position: relative;
+      min-height: 880px;
+      padding: 10.5rem 0 6rem;
+      isolation: isolate;
+    }
+    .hero::before {
+      position: absolute;
+      z-index: -2;
+      inset: 0;
+      background:
+        linear-gradient(rgba(12, 14, 13, .055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(12, 14, 13, .055) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(to bottom, black 45%, transparent 95%);
+      content: "";
+    }
+    .hero::after {
+      position: absolute;
+      z-index: -1;
+      width: 430px;
+      height: 430px;
+      top: 7rem;
+      right: -10rem;
+      border-radius: 50%;
+      background: rgba(255, 75, 31, .13);
+      filter: blur(1px);
+      content: "";
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(360px, .92fr);
+      align-items: center;
+      gap: clamp(3rem, 7vw, 7.5rem);
+    }
+    .hero h1 {
+      max-width: 760px;
+      margin-bottom: 1.55rem;
+      font-size: clamp(3.8rem, 7.6vw, 7.3rem);
+      font-weight: 600;
+      letter-spacing: -.08em;
+      line-height: .9;
+    }
+    .hero h1 .signal { color: var(--orange) }
+    .lead {
+      max-width: 650px;
+      margin-bottom: 2rem;
+      color: #343834;
+      font-size: clamp(1.05rem, 2vw, 1.27rem);
+      line-height: 1.55;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .8rem }
+    .proof-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem 1.2rem;
+      margin: 2rem 0 0;
+      padding: 1.1rem 0 0;
+      border-top: 1px solid var(--line);
+      list-style: none;
+    }
+    .proof-row li { font: 500 .7rem/1.5 var(--mono); text-transform: uppercase; letter-spacing: .06em }
+    .proof-row li::before { color: var(--orange); content: "■"; margin-right: .5rem }
+
+    .phone-stage {
+      position: relative;
+      min-height: 650px;
+      display: grid;
+      place-items: center;
+      perspective: 1400px;
+    }
+    .phone-stage::before {
+      position: absolute;
+      width: min(540px, 115%);
+      aspect-ratio: 1;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      box-shadow: 0 0 0 38px rgba(12, 14, 13, .025), 0 0 0 95px rgba(12, 14, 13, .018);
+      content: "";
+    }
+    .orbit-note {
+      position: absolute;
+      z-index: 2;
+      padding: .5rem .7rem;
+      border: 1px solid var(--ink);
+      background: var(--cream);
+      font: 500 .65rem var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .orbit-note--top { top: 11%; right: -2% }
+    .orbit-note--bottom { bottom: 11%; left: -2% }
+    .orbit-note::before { color: var(--orange); content: "●"; margin-right: .45rem }
+
+    .phone {
+      position: relative;
+      z-index: 1;
+      width: min(318px, 78vw);
+      aspect-ratio: 9 / 19.6;
+      padding: 8px;
+      border: 1px solid #303332;
+      border-radius: 2.6rem;
+      background: linear-gradient(145deg, #646865 0%, #171918 12%, #050606 55%, #474b48 100%);
+      box-shadow: -30px 38px 65px rgba(12, 14, 13, .25), 12px 10px 20px rgba(12, 14, 13, .18), inset 0 0 0 1px #898e8a;
+      transform: rotateY(-10deg) rotateX(2deg) rotateZ(1.5deg);
+      animation: phone-float 7s ease-in-out infinite;
+    }
+    .phone::after {
+      position: absolute;
+      z-index: 5;
+      inset: 9px;
+      border-radius: 2.05rem;
+      background: linear-gradient(120deg, rgba(255, 255, 255, .12), transparent 18%, transparent 75%, rgba(255, 255, 255, .06));
+      pointer-events: none;
+      content: "";
+    }
+    .phone-button { position: absolute; right: -4px; width: 3px; border-radius: 0 3px 3px 0; background: #858a86 }
+    .phone-button--volume { top: 21%; height: 11% }
+    .phone-button--power { top: 36%; height: 8% }
+    .phone-camera {
+      position: absolute;
+      z-index: 6;
+      top: 16px;
+      left: 50%;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #161817;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #30485a, #050606 60%);
+      transform: translateX(-50%);
+    }
+    .phone-screen { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 2.12rem; background: #0b141a }
+    .screen-crop { position: absolute; inset: 0; overflow: hidden }
+    .screen-crop img { position: absolute; width: 100%; max-width: none; height: auto; left: 0; top: 0 }
+    .screen-crop--digest img { transform: translateY(-42%) }
+
+    .signal-band { overflow: hidden; border-block: 1px solid var(--ink); background: var(--orange); color: var(--ink) }
+    .signal-track { width: max-content; display: flex; gap: 2rem; padding: .8rem 0; font: 500 .72rem var(--mono); text-transform: uppercase; letter-spacing: .08em; animation: signal-drift 24s linear infinite }
+    .signal-track span::before { content: "◆"; margin-right: 2rem }
+
+    .dark-section {
+      position: relative;
+      overflow: hidden;
+      padding: 8rem 0;
+      background: var(--ink);
+      color: var(--white);
+      isolation: isolate;
+    }
+    .dark-section::before {
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      opacity: .32;
+      background-image: radial-gradient(rgba(255, 255, 255, .35) .7px, transparent .7px);
+      background-size: 26px 26px;
+      mask-image: radial-gradient(circle at 65% 45%, black, transparent 65%);
+      content: "";
+    }
+    .dark-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(360px, 1.1fr); align-items: center; gap: clamp(3rem, 9vw, 8rem) }
+    .dark-section .eyebrow { color: #bdbfb9 }
+    .section-title { max-width: 800px; margin-bottom: 1.4rem; font-size: clamp(2.8rem, 6vw, 5.5rem); font-weight: 600; letter-spacing: -.065em; line-height: .98 }
+    .section-lead { max-width: 620px; color: #b9bcb7; font-size: 1.08rem }
+    .evidence-list { margin: 2.2rem 0 0; padding: 0; list-style: none }
+    .evidence-list li { display: grid; grid-template-columns: 2rem 1fr; gap: .9rem; padding: 1rem 0; border-top: 1px solid rgba(255, 255, 255, .17) }
+    .evidence-list strong { display: block; margin-bottom: .18rem; font-size: .93rem }
+    .evidence-list p { margin: 0; color: #a9ada7; font-size: .86rem }
+    .check { color: var(--orange); font: 500 1rem var(--mono) }
+    .proof-device { position: relative; min-height: 650px; display: grid; place-items: center; perspective: 1200px }
+    .proof-device .phone { width: min(300px, 74vw); transform: rotateY(12deg) rotateX(1deg) rotateZ(-1.5deg); box-shadow: 34px 44px 70px rgba(0, 0, 0, .55) }
+    .screen-crop--answer img { width: 140%; left: -20%; transform: translateY(-5%) }
+    .proof-caption { position: absolute; z-index: 7; right: 0; bottom: 10%; width: min(250px, 60%); padding: 1rem; border-left: 3px solid var(--orange); background: rgba(20, 23, 21, .92); box-shadow: 0 20px 40px rgba(0, 0, 0, .35); font: 500 .7rem/1.5 var(--mono); text-transform: uppercase; letter-spacing: .04em }
+
+    .section { padding: 8rem 0 }
+    .section-head { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr); gap: 3rem; align-items: end; margin-bottom: 4rem }
+    .section-head p { max-width: 520px; margin: 0; color: var(--muted) }
+
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--ink); border-left: 1px solid var(--ink) }
+    .step-card { min-height: 285px; display: flex; flex-direction: column; padding: 1.5rem; border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); transition: background .2s ease, color .2s ease }
+    .step-card:hover { background: var(--ink); color: var(--white) }
+    .step-number { margin-bottom: auto; color: var(--orange); font: 500 .74rem var(--mono) }
+    .step-card h3 { margin: 2.5rem 0 .6rem; font-size: 1.18rem }
+    .step-card p { margin: 0; color: var(--muted); font-size: .88rem }
+    .step-card:hover p { color: #b9bcb7 }
+    .step-card code { color: inherit; font-size: .85em }
+
+    .architecture { border-block: 1px solid var(--ink); background: var(--cream-2) }
+    .pipeline { display: grid; grid-template-columns: repeat(9, auto); align-items: center; justify-content: space-between; gap: .45rem; margin-top: 3rem }
+    .node { min-height: 92px; min-width: 112px; display: grid; place-items: center; padding: .85rem; border: 1px solid var(--ink); background: var(--cream); text-align: center }
+    .node strong { display: block; font-size: .82rem }
+    .node span { display: block; margin-top: .2rem; color: var(--muted); font: 400 .62rem var(--mono) }
+    .pipe { color: var(--orange); font: 500 .9rem var(--mono) }
+    .architecture-note { margin-top: 1.5rem; color: var(--muted); font: 400 .72rem/1.7 var(--mono) }
+
+    .security-grid { display: grid; grid-template-columns: 1.2fr repeat(2, 1fr); gap: 1rem }
+    .security-card { min-height: 250px; padding: 1.5rem; border: 1px solid var(--line); background: rgba(255, 255, 255, .26) }
+    .security-card--feature { background: var(--orange); border-color: var(--ink) }
+    .security-card .label { font: 500 .68rem var(--mono); letter-spacing: .08em; text-transform: uppercase }
+    .security-card h3 { margin: 4.5rem 0 .7rem; font-size: 1.35rem; letter-spacing: -.03em }
+    .security-card p { margin: 0; color: var(--muted); font-size: .88rem }
+    .security-card--feature p { color: #321006 }
+
+    .commands-section { padding: 8rem 0; background: var(--ink-2); color: var(--white) }
+    .commands-section .section-head p { color: #aeb1ac }
+    .terminal { overflow: hidden; border: 1px solid rgba(255, 255, 255, .22); background: #0a0c0b; box-shadow: 0 30px 80px rgba(0, 0, 0, .25) }
+    .terminal-bar { display: flex; align-items: center; gap: .5rem; padding: .85rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, .15); color: #a8aca7; font: 400 .67rem var(--mono) }
+    .dot { width: .55rem; height: .55rem; border-radius: 50%; background: var(--orange) }
+    .dot:nth-child(2) { opacity: .55 }
+    .dot:nth-child(3) { opacity: .25; margin-right: .5rem }
+    .commands { display: grid; grid-template-columns: repeat(2, 1fr) }
+    .command { display: grid; grid-template-columns: 10rem 1fr; gap: 1rem; min-height: 84px; align-items: center; padding: 1.2rem 1.4rem; border-right: 1px solid rgba(255, 255, 255, .12); border-bottom: 1px solid rgba(255, 255, 255, .12) }
+    .command code { color: #ff7958; font-size: .82rem; overflow-wrap: anywhere }
+    .command span { color: #b9bcb8; font-size: .82rem }
+
+    .closing { position: relative; padding: 8rem 0 7rem; overflow: hidden }
+    .closing::before { position: absolute; z-index: 0; right: -5vw; bottom: -18vw; width: 60vw; height: 60vw; border-radius: 50%; background: var(--orange); content: "" }
+    .closing-inner { position: relative; z-index: 1 }
+    .closing h2 { max-width: 870px; margin-bottom: 2rem; font-size: clamp(3.2rem, 8vw, 7.5rem); font-weight: 600; letter-spacing: -.08em; line-height: .9 }
+    .closing p { max-width: 580px; margin-bottom: 2rem; font-size: 1.1rem }
+
+    footer { border-top: 1px solid var(--ink); background: var(--cream) }
+    .footer-grid { min-height: 150px; display: flex; align-items: center; justify-content: space-between; gap: 2rem; font-size: .78rem }
+    .footer-grid p { margin: 0; color: var(--muted) }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 1.3rem }
+    .footer-links a { min-height: 44px; display: inline-flex; align-items: center; font-weight: 700; text-decoration: none }
+    .footer-links a:hover { color: var(--orange-dark) }
+
+    .js .reveal { opacity: .2; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease }
+    .js .reveal[data-visible="true"] { opacity: 1; transform: none }
+    @keyframes phone-float { 0%, 100% { translate: 0 0 } 50% { translate: 0 -14px } }
+    @keyframes signal-drift { to { transform: translateX(-50%) } }
+
+    @media (max-width: 1020px) {
+      .nav-links a:not(.nav-cta) { display: none }
+      .hero { min-height: auto }
+      .hero-grid, .dark-grid { grid-template-columns: 1fr 390px; gap: 2rem }
+      .hero h1 { font-size: clamp(3.7rem, 8vw, 6rem) }
+      .steps { grid-template-columns: repeat(2, 1fr) }
+      .pipeline { grid-template-columns: repeat(5, 1fr) }
+      .node { min-width: 0 }
+      .pipe:nth-of-type(5) { display: none }
+      .security-grid { grid-template-columns: 1fr 1fr }
+      .security-card--feature { grid-row: span 2 }
+    }
+    @media (max-width: 760px) {
+      .shell { width: min(calc(100% - 1.5rem), var(--max)) }
+      .site-header { position: relative }
+      .nav { min-height: 68px }
+      .nav-links { gap: .5rem }
+      .nav-cta { padding: .7rem .8rem }
+      .hero { padding: 5rem 0 4.5rem }
+      .hero-grid, .dark-grid, .section-head { grid-template-columns: 1fr }
+      .hero h1 { font-size: clamp(3.2rem, 16vw, 5rem) }
+      .hero-copy { position: relative; z-index: 2 }
+      .phone-stage { min-height: 610px; margin-top: 1rem }
+      .orbit-note--top { right: 1% }
+      .orbit-note--bottom { left: 1% }
+      .dark-section, .section, .commands-section { padding: 5.5rem 0 }
+      .proof-device { min-height: 620px }
+      .section-head { gap: 1.2rem; margin-bottom: 2.5rem }
+      .steps { grid-template-columns: 1fr }
+      .step-card { min-height: 230px }
+      .pipeline { grid-template-columns: 1fr; justify-items: stretch }
+      .pipe { text-align: center; transform: rotate(90deg) }
+      .pipe:nth-of-type(5) { display: block }
+      .node { min-height: 78px }
+      .security-grid, .commands { grid-template-columns: 1fr }
+      .security-card--feature { grid-row: auto }
+      .command { grid-template-columns: 8.2rem 1fr; border-right: 0 }
+      .closing { padding: 6rem 0 }
+      .closing::before { width: 100vw; height: 100vw; right: -45vw; bottom: -15vw }
+      .footer-grid { align-items: flex-start; flex-direction: column; justify-content: center; padding: 2rem 0 }
+    }
+    @media (max-width: 460px) {
+      .brand span:last-child { display: none }
+      .button { width: 100% }
+      .hero-actions { display: grid }
+      .phone-stage, .proof-device { min-height: 570px }
+      .phone, .proof-device .phone { width: min(278px, 78vw) }
+      .orbit-note { font-size: .58rem }
+      .proof-caption { right: -2%; width: 68% }
+      .command { grid-template-columns: 1fr; gap: .35rem }
+      .closing h2 { font-size: clamp(3rem, 17vw, 4.6rem) }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto }
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important }
+      .js .reveal { opacity: 1; transform: none }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav shell" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="P1 home"><span class="brand-mark">P1</span><span>P1 Assistant</span></a>
+      <div class="nav-links">
+        <a href="#proof">Product</a><a href="#how">How it works</a><a href="#security">Security</a><a href="#commands">Commands</a>
+        <a class="button nav-cta" href="https://wa.me/919136093485?text=%2Fhelp">Open WhatsApp <span aria-hidden="true">↗</span></a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-grid shell">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Open-source technology intelligence</p>
+          <h1 id="hero-title">Your technology briefing, already in <span class="signal">WhatsApp.</span></h1>
+          <p class="lead">P1 turns a curated pool of technology articles into concise daily briefings and source-linked answers—inside the chat you already check.</p>
+          <div class="hero-actions">
+            <a class="button" href="https://wa.me/919136093485?text=%2Fhelp">Try P1 in WhatsApp <span class="arrow" aria-hidden="true">↗</span></a>
+            <a class="button button--quiet" href="https://github.com/kadamsahil2511/p1">View source <span class="arrow" aria-hidden="true">↗</span></a>
+          </div>
+          <ul class="proof-row" aria-label="P1 product facts"><li>Open source</li><li>Source linked</li><li>Bring your own key</li><li>Self hosted</li></ul>
+        </div>
+        <div class="phone-stage reveal" aria-label="P1 digest shown in a flagship Android phone mockup">
+          <span class="orbit-note orbit-note--top">07:00 IST digest</span><span class="orbit-note orbit-note--bottom">Real WhatsApp output</span>
+          <div class="phone" aria-hidden="true">
+            <span class="phone-button phone-button--volume"></span><span class="phone-button phone-button--power"></span><span class="phone-camera"></span>
+            <div class="phone-screen"><div class="screen-crop screen-crop--digest"><img src="assets/p1-whatsapp-proof.png" alt="P1 delivering a source-linked technology digest in WhatsApp" width="1080" height="4283" fetchpriority="high"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="signal-band" aria-hidden="true"><div class="signal-track">
+      <span>Grounded answers</span><span>Daily technology digest</span><span>Your Groq key</span><span>Curated sources</span><span>Open architecture</span>
+      <span>Grounded answers</span><span>Daily technology digest</span><span>Your Groq key</span><span>Curated sources</span><span>Open architecture</span>
+    </div></div>
+
+    <section class="dark-section" id="proof" aria-labelledby="proof-title">
+      <div class="dark-grid shell">
+        <div class="reveal">
+          <p class="eyebrow">Evidence before eloquence</p>
+          <h2 class="section-title" id="proof-title">A useful answer—or an honest no.</h2>
+          <p class="section-lead">P1 retrieves from its indexed technology pool, cites what it used, and refuses to invent an answer when the available evidence does not support one.</p>
+          <ul class="evidence-list">
+            <li><span class="check">01</span><div><strong>Answers stay traceable</strong><p>Source URLs travel with the response so you can inspect the original reporting.</p></div></li>
+            <li><span class="check">02</span><div><strong>Retrieval comes first</strong><p>Qdrant search and reranking narrow the context before Groq generates a reply.</p></div></li>
+            <li><span class="check">03</span><div><strong>Uncertainty is visible</strong><p>If the indexed evidence is insufficient, P1 says so instead of filling the gap.</p></div></li>
+          </ul>
+        </div>
+        <div class="proof-device reveal">
+          <div class="phone" aria-hidden="true">
+            <span class="phone-button phone-button--volume"></span><span class="phone-button phone-button--power"></span><span class="phone-camera"></span>
+            <div class="phone-screen"><div class="screen-crop screen-crop--answer"><img src="assets/p1-whatsapp-proof.png" alt="P1 declining an unsupported answer and citing indexed sources in WhatsApp" width="1080" height="4283" loading="lazy"></div></div>
+          </div>
+          <p class="proof-caption">Grounded behavior, captured from the working product—not a concept mockup.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="shell">
+        <div class="section-head reveal">
+          <div><p class="eyebrow">Four steps, one private link</p><h2 class="section-title" id="how-title">From hello to briefing in minutes.</h2></div>
+          <p>Bring your own Groq key. P1 checks it on a secure setup page, stores it encrypted, and asks you to confirm the account back inside WhatsApp.</p>
+        </div>
+        <div class="steps reveal">
+          <article class="step-card"><span class="step-number">01 / OPEN</span><div><h3>Message P1</h3><p>Open the chat and send <code>/help</code> to see the available workflow.</p></div></article>
+          <article class="step-card"><span class="step-number">02 / REGISTER</span><div><h3>Request access</h3><p>Send <code>/register</code>. Your setup link is valid for ten minutes.</p></div></article>
+          <article class="step-card"><span class="step-number">03 / CONNECT</span><div><h3>Add your keys</h3><p>Enter a primary Groq key and an optional backup on the secure page—never in chat.</p></div></article>
+          <article class="step-card"><span class="step-number">04 / CONFIRM</span><div><h3>Finish in WhatsApp</h3><p>Reply with <code>/confirm &lt;code&gt;</code>, then ask a question or run <code>/latest</code>.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section architecture" aria-labelledby="architecture-title">
+      <div class="shell reveal">
+        <p class="eyebrow">Inspectable by design</p><h2 class="section-title" id="architecture-title">A small, open pipeline.</h2>
+        <div class="pipeline" aria-label="P1 request architecture">
+          <div class="node"><div><strong>WhatsApp</strong><span>conversation</span></div></div><span class="pipe" aria-hidden="true">→</span>
+          <div class="node"><div><strong>Evolution</strong><span>webhook</span></div></div><span class="pipe" aria-hidden="true">→</span>
+          <div class="node"><div><strong>Mastra</strong><span>agent logic</span></div></div><span class="pipe" aria-hidden="true">→</span>
+          <div class="node"><div><strong>MCP / FastAPI</strong><span>retrieval tools</span></div></div><span class="pipe" aria-hidden="true">→</span>
+          <div class="node"><div><strong>Qdrant + Groq</strong><span>evidence + answer</span></div></div>
+        </div>
+        <p class="architecture-note">TypeScript agent · Python retrieval service · per-user encrypted credentials · primary/backup model fallback</p>
+      </div>
+    </section>
+
+    <section class="section" id="security" aria-labelledby="security-title">
+      <div class="shell">
+        <div class="section-head reveal">
+          <div><p class="eyebrow">Private by default</p><h2 class="section-title" id="security-title">Your key. Your account. Clear boundaries.</h2></div>
+          <p>P1 keeps setup out of the chat transcript and makes every sensitive step short-lived, validated, and explicit.</p>
+        </div>
+        <div class="security-grid reveal">
+          <article class="security-card security-card--feature"><span class="label">Encrypted at rest</span><h3>Keys stay server-side.</h3><p>Credentials are validated, encrypted, and activated only after confirmation from the matching WhatsApp account.</p></article>
+          <article class="security-card"><span class="label">Short lived</span><h3>Ten-minute setup links.</h3><p>The private registration URL expires quickly and is tied to the requesting phone number.</p></article>
+          <article class="security-card"><span class="label">Resilient</span><h3>Optional backup key.</h3><p>A separate key can take over only when the primary model request fails.</p></article>
+          <article class="security-card"><span class="label">Transparent cost</span><h3>No hidden inference bill.</h3><p>Your Groq account controls usage, limits, and any provider charges.</p></article>
+          <article class="security-card"><span class="label">User controlled</span><h3>Delete from WhatsApp.</h3><p><code>/deleteaccount</code> removes the account and current conversation state.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="commands-section" id="commands" aria-labelledby="commands-title">
+      <div class="shell">
+        <div class="section-head reveal">
+          <div><p class="eyebrow">No new interface to learn</p><h2 class="section-title" id="commands-title">Eight commands. Plain messages work too.</h2></div>
+          <p>Use P1 as a normal conversation or choose a focused command when you want fresh stories, a clean session, or account control.</p>
+        </div>
+        <div class="terminal reveal">
+          <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>P1 / command reference</div>
+          <div class="commands">
+            <div class="command"><code>Any message</code><span>Chat with memory for the current session.</span></div>
+            <div class="command"><code>/latest</code><span>Receive recent source-linked stories.</span></div>
+            <div class="command"><code>/ask &lt;question&gt;</code><span>Ask across the indexed article pool.</span></div>
+            <div class="command"><code>/sources</code><span>Inspect the approved website pool.</span></div>
+            <div class="command"><code>/newchat</code><span>Start with a clean conversation.</span></div>
+            <div class="command"><code>/account</code><span>Check which keys are configured.</span></div>
+            <div class="command"><code>/deleteaccount</code><span>Remove your account and current chat.</span></div>
+            <div class="command"><code>/help</code><span>Open the complete guide in WhatsApp.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="closing-inner shell reveal">
+        <p class="eyebrow">Keep up without another app</p><h2 id="closing-title">Put the signal in your chat.</h2>
+        <p>Open P1, connect your Groq key, and turn technology news into a briefing you can question.</p>
+        <div class="hero-actions">
+          <a class="button" href="https://wa.me/919136093485?text=%2Fhelp">Start with /help <span class="arrow" aria-hidden="true">↗</span></a>
+          <a class="button button--cream" href="https://github.com/kadamsahil2511/p1">Explore the repository <span class="arrow" aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-grid shell">
+      <div><a class="brand" href="#top"><span class="brand-mark">P1</span><span>P1 Assistant</span></a><p>Open-source, grounded technology intelligence in WhatsApp.</p></div>
+      <div class="footer-links"><a href="#how">Setup</a><a href="#security">Security</a><a href="#commands">Commands</a><a href="https://github.com/kadamsahil2511/p1">GitHub ↗</a></div>
     </div>
-    <div class="panel" style="margin-top:1rem"><div class="step">04 · CONFIRM</div><h3>Finish in WhatsApp</h3><p>After the key check, P1 sends you a confirmation code. Reply with the exact <code>/confirm &lt;code&gt;</code> command. Then send an ordinary message or try <code>/latest</code>.</p></div>
-  </section>
-  <section aria-labelledby="commands-title">
-    <h2 id="commands-title">What you can do</h2>
-    <div class="panel commands">
-      <p><code>Any message</code> Chat normally with memory for your current session.</p>
-      <p><code>/latest</code> Get recent sourced stories.</p>
-      <p><code>/ask &lt;question&gt;</code> Ask about indexed articles.</p>
-      <p><code>/sources</code> See the approved website pool.</p>
-      <p><code>/newchat</code> Start a fresh conversation.</p>
-      <p><code>/account</code> Check which keys are configured.</p>
-      <p><code>/deleteaccount</code> Remove your account and current chat.</p>
-      <p><code>/help</code> See the full command guide in WhatsApp.</p>
-    </div>
-    <p class="muted">Chats start a new session after one hour of inactivity. Source changes and the 07:00 IST digest are managed by the owner.</p>
-  </section>
-  <section aria-labelledby="privacy-title">
-    <h2 id="privacy-title">Your key, your account</h2>
-    <p class="muted">The setup link is short lived and tied to your WhatsApp number. Keys are validated, encrypted on the server, and activated only after your WhatsApp confirmation. The backup key is used only if the primary model request fails. Your Groq account controls your usage and any provider charges.</p>
-  </section>
-</main>
-<footer><div class="wrap">Built with Mastra, Groq, Evolution API, FastAPI, MCP, and Qdrant. <a href="https://github.com/kadamsahil2511/p1">Code and architecture on GitHub</a>.</div></footer>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.dataset.visible = 'true'
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.12 })
+    document.querySelectorAll('.reveal').forEach(element => observer.observe(element))
+  </script>
+</body>
 </html>
