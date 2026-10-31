@@ -70,10 +70,17 @@ class PublicSiteTests(unittest.TestCase):
             self.assertIsNotNone(rule)
             self.assertNotRegex(rule.group(1), r"width:\s*(?:1[1-9]\d|[2-9]\d\d)%")
 
-    def test_answer_crop_masks_owner_only_content(self):
+    def test_answer_crop_uses_a_compact_phone_viewport(self):
         self.assertRegex(
             self.source,
-            r"\.screen-crop--answer::after\s*\{[^}]*height:\s*30%[^}]*background:\s*#0b141a",
+            r"\.proof-device \.phone\s*\{[^}]*aspect-ratio:\s*9\s*/\s*15\.5",
+        )
+        self.assertNotIn(".screen-crop--answer::after", self.source)
+
+    def test_proof_caption_does_not_cover_the_screenshot(self):
+        self.assertRegex(
+            self.source,
+            r"\.proof-caption\s*\{[^}]*position:\s*static",
         )
 
     def test_answer_crop_starts_with_the_user_message(self):

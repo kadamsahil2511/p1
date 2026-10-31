@@ -300,11 +300,10 @@
     .evidence-list strong { display: block; margin-bottom: .18rem; font-size: .93rem }
     .evidence-list p { margin: 0; color: #a9ada7; font-size: .86rem }
     .check { color: var(--orange); font: 500 1rem var(--mono) }
-    .proof-device { position: relative; min-height: 650px; display: grid; place-items: center; perspective: 1200px }
-    .proof-device .phone { width: min(300px, 74vw); transform: rotateY(12deg) rotateX(1deg) rotateZ(-1.5deg); box-shadow: 34px 44px 70px rgba(0, 0, 0, .55) }
+    .proof-device { position: relative; min-height: 570px; display: flex; flex-direction: column; align-items: center; justify-content: center; perspective: 1200px }
+    .proof-device .phone { width: min(300px, 74vw); aspect-ratio: 9 / 15.5; transform: rotateY(12deg) rotateX(1deg) rotateZ(-1.5deg); box-shadow: 34px 44px 70px rgba(0, 0, 0, .55) }
     .screen-crop--answer img { transform: translateY(0) }
-    .screen-crop--answer::after { position: absolute; z-index: 2; inset: auto 0 0; height: 30%; background: #0b141a; content: "" }
-    .proof-caption { position: absolute; z-index: 7; right: 0; bottom: 10%; width: min(250px, 60%); padding: 1rem; border-left: 3px solid var(--orange); background: rgba(20, 23, 21, .92); box-shadow: 0 20px 40px rgba(0, 0, 0, .35); font: 500 .7rem/1.5 var(--mono); text-transform: uppercase; letter-spacing: .04em }
+    .proof-caption { position: static; z-index: 7; align-self: flex-end; width: min(250px, 60%); margin: 1rem 0 0; padding: 1rem; border-left: 3px solid var(--orange); background: rgba(20, 23, 21, .92); box-shadow: 0 20px 40px rgba(0, 0, 0, .35); font: 500 .7rem/1.5 var(--mono); text-transform: uppercase; letter-spacing: .04em }
 
     .section { padding: 8rem 0 }
     .section-head { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr); gap: 3rem; align-items: end; margin-bottom: 4rem }
@@ -390,7 +389,7 @@
       .orbit-note--top { right: 1% }
       .orbit-note--bottom { left: 1% }
       .dark-section, .section, .commands-section { padding: 5.5rem 0 }
-      .proof-device { min-height: 620px }
+      .proof-device { min-height: 580px }
       .section-head { gap: 1.2rem; margin-bottom: 2.5rem }
       .steps { grid-template-columns: 1fr }
       .step-card { min-height: 230px }
