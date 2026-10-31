@@ -76,6 +76,12 @@ class PublicSiteTests(unittest.TestCase):
             r"\.screen-crop--answer::after\s*\{[^}]*height:\s*30%[^}]*background:\s*#0b141a",
         )
 
+    def test_answer_crop_starts_with_the_user_message(self):
+        self.assertRegex(
+            self.source,
+            r"\.screen-crop--answer img\s*\{[^}]*transform:\s*translateY\(0\)",
+        )
+
     def test_security_and_cost_copy_is_explicit(self):
         for phrase in (
             "bring your own groq key",
