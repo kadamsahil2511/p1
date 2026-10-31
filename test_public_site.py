@@ -50,43 +50,37 @@ class PublicSiteTests(unittest.TestCase):
         self.assertIn("https://github.com/kadamsahil2511/p1", self.page.hrefs)
         self.assertIn("https://console.groq.com/keys", self.page.hrefs)
 
-    def test_real_whatsapp_proof_is_used_twice(self):
-        proof_images = [
-            image
-            for image in self.page.images
-            if image.get("src") == "assets/p1-whatsapp-proof.png"
-        ]
-        self.assertEqual(len(proof_images), 2)
+    def test_distinct_whatsapp_proof_screenshots_are_used(self):
+        expected_sources = {
+            "assets/p1-answer-proof.png",
+            "assets/p1-digest-proof.png",
+        }
+        proof_images = [image for image in self.page.images if image.get("src") in expected_sources]
+        self.assertEqual({image["src"] for image in proof_images}, expected_sources)
         self.assertTrue(all(image.get("alt", "").strip() for image in proof_images))
-        self.assertTrue((HTML_PATH.parent / "assets/p1-whatsapp-proof.png").is_file())
+        for source in expected_sources:
+            self.assertTrue((HTML_PATH.parent / source).is_file())
 
-    def test_phone_screens_do_not_zoom_and_crop_image_sides(self):
-        for crop in ("digest", "answer"):
-            rule = re.search(
-                rf"\.screen-crop--{crop} img\s*\{{([^}}]+)\}}",
-                self.source,
-                re.DOTALL,
-            )
-            self.assertIsNotNone(rule)
-            self.assertNotRegex(rule.group(1), r"width:\s*(?:1[1-9]\d|[2-9]\d\d)%")
-
-    def test_answer_crop_uses_a_compact_phone_viewport(self):
+    def test_phone_wraps_native_screenshot_ratio_without_cropping(self):
         self.assertRegex(
             self.source,
-            r"\.proof-device \.phone\s*\{[^}]*aspect-ratio:\s*9\s*/\s*15\.5",
+            r"\.phone\s*\{[^}]*aspect-ratio:\s*auto",
         )
-        self.assertNotIn(".screen-crop--answer::after", self.source)
+        self.assertRegex(
+            self.source,
+            r"\.phone-screen\s*\{[^}]*height:\s*auto[^}]*aspect-ratio:\s*1080\s*/\s*2392",
+        )
+        self.assertRegex(
+            self.source,
+            r"\.screen-crop img\s*\{[^}]*position:\s*static[^}]*width:\s*100%[^}]*height:\s*auto",
+        )
+        self.assertNotIn(".screen-crop--digest img", self.source)
+        self.assertNotIn(".screen-crop--answer img", self.source)
 
     def test_proof_caption_does_not_cover_the_screenshot(self):
         self.assertRegex(
             self.source,
             r"\.proof-caption\s*\{[^}]*position:\s*static",
-        )
-
-    def test_answer_crop_starts_with_the_user_message(self):
-        self.assertRegex(
-            self.source,
-            r"\.screen-crop--answer img\s*\{[^}]*transform:\s*translateY\(0\)",
         )
 
     def test_security_and_cost_copy_is_explicit(self):
