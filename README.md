@@ -4,6 +4,12 @@ P1 Assistant is a self-hosted WhatsApp assistant for conversation and technology
 
 **Public guide:** [p1.kadamsahil.com](https://p1.kadamsahil.com) explains WhatsApp registration, key setup, and commands. Vercel serves the static guide. Short-lived setup links use `setup.p1.kadamsahil.com`; they cannot be opened without a link sent in WhatsApp.
 
+## Guest demo
+
+Recruiters can try retrieval chat at [p1.kadamsahil.com#try](https://p1.kadamsahil.com#try) with no WhatsApp and no Groq key in the browser. The Vercel landing posts to `https://setup.p1.kadamsahil.com/guest/*`; inference stays on the VPS.
+
+Set `GUEST_ENABLED=true` and `python keys.py set GUEST_GROQ_API_KEY`, then restart Compose. Guest chat uses only `GUEST_GROQ_API_KEY` (not `GROQ_API_KEY`). Until both are set, `/guest/chat` returns a warming-up message and the landing still loads. Guest sessions cannot scrape URLs, add sources, or run the owner digest.
+
 ## Setup and start
 
 Use Python 3.12+ and Node 22+. From this directory:

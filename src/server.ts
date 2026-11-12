@@ -6,6 +6,7 @@ import { runNewsWorkflow } from './workflow.js';
 import { allowWebRead, evolutionIsOpen, firstLink, formatDigest, isWebhookPath, parseIncoming, selectNew, whatsAppText, type Article } from './logic.js';
 import { AccountStore } from './accounts.js';
 import { handleSetup } from './setup-web.js';
+import { handleGuest } from './guest.js';
 
 process.umask(0o077);
 const required = ['GROQ_API_KEY', 'ACCOUNT_ENCRYPTION_KEY', 'SETUP_BASE_URL', 'P1_API_TOKEN', 'EVOLUTION_API_KEY', 'EVOLUTION_INSTANCE', 'WHATSAPP_OWNER_NUMBER', 'WEBHOOK_SECRET'];
@@ -150,6 +151,7 @@ const webReads = new Map<string, { started: number; count: number }>();
 const server = createServer(async (request, response) => {
   if (request.url === '/health') { response.writeHead(200).end('ok'); return; }
   if (await handleSetup(request, response, accounts, send)) return;
+  if (await handleGuest(request, response, runNewsWorkflow)) return;
   const received = request.url ?? '';
   if (request.method !== 'POST' || !isWebhookPath(received, process.env.WEBHOOK_SECRET!)) {
     response.writeHead(404).end(); return;

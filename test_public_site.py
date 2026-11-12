@@ -103,6 +103,16 @@ class PublicSiteTests(unittest.TestCase):
     def test_phone_mockup_has_no_third_party_wordmark(self):
         self.assertNotIn("samsung", self.source.lower())
 
+    def test_guest_try_section_is_wired(self):
+        self.assertRegex(self.source, r'<section class="section" id="try"')
+        self.assertIn("#try", self.page.hrefs)
+        self.assertIn("try guest chat", self.visible_text)
+        self.assertRegex(self.source, r'href="#try"[^>]*>\s*Try guest chat')
+        self.assertIn("https://setup.p1.kadamsahil.com/guest/chat", self.source)
+        self.assertIn("p1-guest-id", self.source)
+        self.assertIn("p1-guest-thread", self.source)
+        self.assertNotIn("GUEST_GROQ_API_KEY", self.source)
+
 
 if __name__ == "__main__":
     unittest.main()
